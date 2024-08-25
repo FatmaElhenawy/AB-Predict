@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'LOGO2.png' %}" type="image/x-icon">
+    <title>History</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url("{% static 'background.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            line-height: 1.6;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .nav-container {
+            background-color: transparent;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        :root {
+            --mainColor: rgb(76, 35, 120);
+            --lightColor: #eee;
+            --darkColor: rgb(39, 1, 81);
+            --lightPurple: #725AC1;
+        }
+
+        .nav-container img {
+            width: 100px;
+            height: 80px;
+        }
+
+        .nav a {
+            color: var(--lightColor);
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background-color: var(--mainColor);
+        }
+
+        .history {
+            padding: 20px;
+            margin: auto;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 10px;
+            background-color: transparent;
+            margin-top: 20px;
+            overflow-x: auto;
+            height: fit-content;
+        }
+
+        .historyh1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: var(--lightColor);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            overflow: auto;
+        }
+
+        table, th, td {
+            border: 1px solid var(--darkColor);
+        }
+
+        th, td {
+            padding: 10px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--darkColor);
+            color: #fff;
+            font-weight: bold;
+        }
+
+        tr {
+            background-color: #eee;
+        }
+
+        td {
+            color: var(--darkColor);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 400px; 
+        }
+
+        .input-data {
+            font-style: italic;
+            color: var(--darkColor);
+        }
+
+        .search-form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-form input[type="text"] {
+            padding: 8px;
+            width: 70%;
+            max-width: 500px;
+            border: 1px solid var(--mainColor);
+            border-radius: 5px;
+        }
+
+        .search-form input[type="submit"] {
+            padding: 8px 16px;
+            background-color: var(--mainColor);
+            color: var(--lightColor);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-form input[type="submit"]:hover {
+            background-color: var(--darkColor);
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-form input[type="text"],
+        .filter-form input[type="date"],
+        .filter-form select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid var(--mainColor);
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        .filter-form input[type="submit"] {
+            padding: 8px 16px;
+            background-color: var(--mainColor);
+            color: var(--lightColor);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-form input[type="submit"]:hover {
+            background-color: var(--darkColor);
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <span>
+            <img class="navbar-logo" src="{% static 'LOGO2.png' %}" alt="{% static 'LOGO2.png' %}">
+        </span>
+        <div class="nav" id="home_nav">
+            <a href="{% url 'myApp:home_log' %}">Home</a>
+            <a href="{% url 'myApp:history' %}" class="active">History</a>
+            <a href="{% url 'myApp:prediction' %}">Prediction</a>
+            <a href="{% url 'myApp:logoutUser' %}">Logout</a>
+        </div>
+    </div>
+    <div class="history">
+        <h1 class="historyh1">Prediction History</h1>
+        <form class="filter-form" method="GET" action="{% url 'myApp:history' %}">
+            <input type="text" name="input_data" placeholder="Search Input Data..." value="{{ query_input_data }}">
+            <input type="text" name="description" placeholder="Search Description..." value="{{ query_description }}">
+            <input type="date" name="prediction_date" value="{{ query_prediction_date }}">
+            <input type="submit" value="Search">
+        </form>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Input Data</th>
+                    <th>Description</th>
+                    <th>Prediction Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in history %}
+                    {% if record %}
+                        <tr>
+                            <td>{{ record.prediction_date }}</td>
+                            <td class="input_data">
+                                {% if record.input_data %}
+                                    {% for key, value in record.input_data.items %}
+                                        <strong>{{ key }}:</strong> {{ value }}<br>
+                                    {% endfor %}
+                                {% else %}
+                                    No input data available.
+                                {% endif %}
+                            </td>
+                            {% if record.Description %}
+                                <td>{{ record.Description }}</td>
+                            {% else %}
+                                <td>None</td>
+                            {% endif %}
+                            <td>{{ record.prediction_result }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

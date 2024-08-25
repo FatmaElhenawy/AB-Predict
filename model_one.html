@@ -1,0 +1,422 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'LOGO2.png' %}" type="image/x-icon">
+    <title>Model One</title>
+    <style>
+        :root {
+            --mainColor: rgb(76, 35, 120);
+            --lightColor: #eee;
+            --darkColor: rgb(39, 1, 81);
+            --textColor: #ffffff;
+            --backgroundColor: #2c2c2c;
+            --model2Color: rgba(117, 88, 146, 0.011);
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            background-image: url("{% static 'background.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            line-height: 1.6;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        /* Navbar Styling */
+        .nav-container {
+            background-color: transparent;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container img {
+            width: 100px;
+            height: 80px;
+        }
+
+        .nav a {
+            color: var(--lightColor);
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background-color: var(--mainColor);
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0 25px;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 120px;
+            height: 60px;
+            margin: 0 15px;
+            background: var(--darkColor);
+            border-radius: 15px;
+            color: white;
+            font-size: 22px;
+            line-height: 60px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-align: center;
+        }
+
+        .icon:hover {
+            background: var(--darkColor);
+            transform: scale(1.05);
+        }
+
+        .icon.model2:hover {
+            background: var(--darkColor);
+            transform: scale(1.05);
+        }
+
+        .icon.model2 {
+            background: var(--mainColor);
+        }
+
+        .container {
+            background: transparent;
+            border-radius: 15px;
+            padding: 2em;
+            margin: 20px;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .card {
+            background: var(--darkColor);
+            background: linear-gradient(135deg, rgb(76, 35, 120) 0%, rgb(39, 1, 81) 100%);
+            border-radius: 15px;
+            padding: 2em;
+            text-align: center;
+            color: var(--lightColor);
+        }
+
+        .form-group {
+            margin: 1.5em 0;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: var(--lightColor);
+        }
+
+        .form-group p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--lightColor);
+            opacity: 0.8;
+        }
+
+        .form-group input,
+        .form-group select {
+            border: 1px solid #ccccccd8;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            color: rgb(231, 29, 29);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        button {
+            position:relative;
+            display: inline-block;
+            margin: 0 100px;
+            padding: 10px 30px;
+            text-align: center;
+            font-size: 18px;
+            letter-spacing: 1px;
+            text-decoration: none;
+            color: var(--lightColor);
+            font-weight: bold;
+            background: transparent;
+            cursor: pointer;
+            transition: ease-out 0.5s;
+            border: 2px solid var(--lightColor);
+            border-radius: 10px;
+            box-shadow: inset 0 0 0 0 #725AC1;
+        }
+
+        button:hover {
+            color: var(--darkColor);
+            box-shadow: inset 0 -100px 0 0 var(--lightColor);
+        }
+
+        button:active {
+            transform: scale(0.9);
+        }
+
+        #result {
+            background: var(--lightColor);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            color: #000;
+            font-weight: bold;
+        }
+    </style>
+
+    <script defer src="{% static 'model_1.js' %}" defer></script>
+</head>
+
+<body>
+    <div class="nav-container">
+        <img class="navbar-logo" src="{% static 'LOGO2.png' %}" alt="Logo">
+        <div class="nav">
+            <a href="{% url 'myApp:home' %}">Home</a>
+            <a href="{% url 'myApp:history' %}">History</a>
+            <a href="{% url 'myApp:prediction' %}" class="active">Prediction</a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'myApp:logoutUser' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'myApp:sign' %}">Sign Up</a>
+                <a href="{% url 'myApp:Login' %}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="flex-container">
+        <div class="container">
+            <div class="card">
+                <div class="icon-container">
+                    <div class="icon" data-url="{% url 'myApp:model1' %}" onclick="navigateTo(this.getAttribute('data-url'))">Model 1</div>
+                    <div class="icon model2" data-url="{% url 'myApp:model2' %}" onclick="navigateTo(this.getAttribute('data-url'))">Model 2</div>
+                </div>
+                <form method="POST" action="{% url 'myApp:model1' %}" id="prediction-form" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    <div class="btn-group mb-3">
+                        <button type="button" class="btn btn-secondary" onclick="loadExample()">Load Example</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearInputs()">Clear</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.H_CDR1.id_for_label }}">H_CDR1:</label>
+                        <p>Sequence Consisting Of Antibody Heavy Chain Of CDR1 From [A,B,C,D,E,F,GH,I,K,L,M,N,P,Q,R,S,T,V,W,Y] All in CAPITALS </p>
+                        {{ form.H_CDR1 }}
+                        <div id="h_cdr1_error" class="error-message">    {% for error in form.H_CDR1.errors %}
+                            <div class="error-message">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.H_CDR2.id_for_label }}">H_CDR2:</label>
+                        <p>Sequence Consisting Of Antibody Heavy Chain Of CDR2 From [A,B,C,D,E,F,GH,I,K,L,M,N,P,Q,R,S,T,V,W,Y] All in CAPITALS </p>
+                        {{ form.H_CDR2 }}
+                        <div id="h_cdr2_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.H_CDR3.id_for_label }}">H_CDR3:</label>
+                        <p>Sequence Consisting Of Antibody Heavy Chain Of CDR3 From [A,B,C,D,E,F,GH,I,K,L,M,N,P,Q,R,S,T,V,W,Y] All in CAPITALS </p>
+                        {{ form.H_CDR3 }}
+                        <div id="h_cdr3_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.L_CDR1.id_for_label }}">L_CDR1:</label>
+                        <p>Sequence Consisting Of Antibody Light Chain Of CDR1 From [A,B,C,D,E,F,GH,I,K,L,M,N,P,Q,R,S,T,V,W,Y] All in CAPITALS </p>
+                        {{ form.L_CDR1 }}
+                        <div id="l_cdr1_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.L_CDR2.id_for_label }}">L_CDR2:</label>
+                        <p>Sequence Consisting Of Antibody Light Chain Of CDR2 From [A,B,C,D,E,F,GH,I,K,L,M,N,P,Q,R,S,T,V,W,Y] All in CAPITALS </p>
+                        {{ form.L_CDR2 }}
+                        <div id="l_cdr2_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.L_CDR3.id_for_label }}">L_CDR3:</label>
+                        <p>Sequence Consisting Of Antibody Light Chain Of CDR3 From [A,B,C,D,E,F,GH,I,K,L,M,N,P,Q,R,S,T,V,W,Y] All in CAPITALS </p>
+                        {{ form.L_CDR3 }}
+                        <div id="l_cdr3_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.Epitope.id_for_label }}">Epitope:</label>
+                        <p> Antigen Epitope Sequence</p>
+                        {{ form.Epitope }}
+                        <div id="epitope_error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.Description.label }}">Description:</label>
+                        <p>Describe your prediction trial (optional)</p>
+                        {{ form.Description }}
+                        <div id="description_error" class="error-message"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3 c ">
+                        <button type="submit" class="btn btn-primary " >Show Result</button>
+                    </div>
+                </form>
+                <!-- Result Display -->
+                <div id="result">
+                    {% if prediction is not None %}
+                        <p>The prediction is: {{ prediction }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function navigateTo(url) {
+        window.location.href = url;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function loadExample() {
+            document.getElementById('id_H_CDR1').value = 'GYTFSDYWIE';
+            document.getElementById('id_H_CDR2').value = 'EILPGSGSTNYHERFKG';
+            document.getElementById('id_H_CDR3').value = 'GNYDFDG';
+            document.getElementById('id_L_CDR1').value = 'SASSSVNYMY';
+            document.getElementById('id_L_CDR2').value = 'DTSKLAS';
+            document.getElementById('id_L_CDR3').value = 'QQWGRNPT';
+            document.getElementById('id_Epitope').value = 'TTYQMDVNPEGKYSFADSYEMEEDGVRKCEGPSDSFTHTPPLDPQPENRTDTKQHEISDVIGTSGQKTKSNRGENSCKAEGCWGPEPRDCREGPREFVECTGRGPDNCCVAGVMGE';
+        }
+        window.loadExample = loadExample;
+
+        function clearInputs() {
+            const ids = [
+            'id_H_CDR1', 'id_H_CDR2', 'id_H_CDR3',
+            'id_L_CDR1', 'id_L_CDR2', 'id_L_CDR3',
+            'id_Epitope', 'id_Description'
+            ];
+            ids.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = '';
+                } else {
+                    console.warn(`Element with id ${id} not found`);
+                }
+            });
+            const resultElement = document.getElementById('result');
+            if (resultElement) {
+                resultElement.innerHTML = ''; // Clear the result
+            } else {
+                console.warn('Result element not found');
+            }
+            console.log("Result cleared");
+        }
+        window.clearInputs = clearInputs;
+    });
+
+    function validateForm() {
+            const h_cdr1 = document.getElementById("id_H_CDR1").value;
+            const h_cdr2 = document.getElementById("id_H_CDR2").value;
+            const h_cdr3 = document.getElementById("id_H_CDR3").value;
+            const l_cdr1 = document.getElementById("id_L_CDR1").value;
+            const l_cdr2 = document.getElementById("id_L_CDR2").value;
+            const l_cdr3 = document.getElementById("id_L_CDR3").value;
+            const epitope = document.getElementById("id_Epitope").value;
+
+            let isValid = true;
+
+            //regular expression for valid characters
+            const regex = /^[ABCDEFGHIKLMNPQRSTVWY]+$/;
+            
+            //validation rules
+            if (!regex.test(h_cdr1) || h_cdr1.length > 12) {
+                document.getElementById("h_cdr1_error").innerText = "Invalid input, it should be all capital letters from the valid leters";
+                isValid = false;
+            } else {
+                document.getElementById("h_cdr1_error").innerText = "";
+            }
+
+            if (!regex.test(h_cdr2) || h_cdr2.length > 22) {
+                document.getElementById("h_cdr2_error").innerText = "Invalid input, it should be all capital letters from the valid leters";
+                isValid = false;
+            } else {
+                document.getElementById("h_cdr2_error").innerText = "";
+            }
+
+            if (!regex.test(h_cdr3) || h_cdr3.length > 31) {
+                document.getElementById("h_cdr3_error").innerText = "Invalid input, it should be all capital letters from the valid leters";
+                isValid = false;
+            } else {
+                document.getElementById("h_cdr3_error").innerText = "";
+            }
+
+            if (!regex.test(l_cdr1) || l_cdr1.length > 16) {
+                document.getElementById("l_cdr1_error").innerText = "Invalid input, it should be all capital letters from the valid leters";
+                isValid = false;
+            } else {
+                document.getElementById("l_cdr1_error").innerText = "";
+            }
+
+            if (!regex.test(l_cdr2) || l_cdr2.length > 8) {
+                document.getElementById("l_cdr2_error").innerText = "Invalid input, it should be all capital letters from the valid leters";
+                isValid = false;
+            } else {
+                document.getElementById("l_cdr2_error").innerText = "";
+            }
+
+            if (!regex.test(l_cdr3) || l_cdr3.length > 18) {
+                document.getElementById("l_cdr3_error").innerText = "Invalid input, it should be all capital letters from the valid leters";
+                isValid = false;
+            } else {
+                document.getElementById("l_cdr3_error").innerText = "";
+            }
+
+            if (!regex.test(epitope) || epitope.length > 515) {
+                document.getElementById("epitope_error").innerText = "Invalid input, it should be all capital letters from the valid leters";
+                isValid = false;
+            } else {
+                document.getElementById("epitope_error").innerText = "";
+            }
+
+            return isValid;
+        }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const inputFields = [
+            'id_H_CDR1',
+            'id_H_CDR2',
+            'id_H_CDR3',
+            'id_L_CDR1',
+            'id_L_CDR2',
+            'id_L_CDR3',
+            'id_Epitope'
+        ];
+
+        inputFields.forEach(field => {
+            document.getElementById(field).addEventListener('input', validateForm);
+        });
+    });
+</script>
+</html>

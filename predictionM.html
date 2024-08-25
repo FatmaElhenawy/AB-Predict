@@ -1,0 +1,194 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'LOGO2.png' %}" type="image/x-icon">
+    <title>Prediction</title>
+    <style>
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+    background-image: url("{% static 'background.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    line-height: 1.6;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+}
+
+/* Navbar Styling */
+.nav-container {
+    background-color: transparent;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+:root {
+    --mainColor: rgb(76, 35, 120); 
+    --lightColor: #eee; 
+    --darkColor: rgb(39, 1, 81); 
+    --lightPurple: #725AC1
+}
+
+.nav-container img {
+    width: 100px;
+    height: 80px;
+}
+
+.nav a {
+    color: var(--lightColor);
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav a:hover,
+.nav a.active {
+    background-color: var(--mainColor); 
+}
+
+.flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.container {
+    background: transparent; 
+    border-radius: 15px;
+    padding: 2em;
+    margin: 20px;
+    width: 90%;
+    max-width: 800px;
+}
+
+.cardd {
+    display: flex;
+    justify-content: space-between;
+    background: transparent; 
+    border-radius: 15px;
+    padding: 2em;
+    text-align: center;
+    color: var(--lightColor); 
+    margin-bottom: 20px;
+}
+
+.card {
+    background-color: var(--lightPurple); 
+    border-radius: 15px;
+    padding: 2em;
+    width: calc(50% - 1em); 
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s ease;
+    cursor: pointer; 
+    margin-right: 20px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 12px 8px 8px rgba(0, 0, 0, 0.212);
+}
+
+.card:last-child {
+    margin-right: 0; 
+}
+
+.card:hover {
+    background: var(--lightPurple);
+    transform: scale(1.05);    
+}
+
+.icon-containerr {
+    position: absolute;
+    top: -20px;
+    left: calc(50% - 20px);
+    background-color: transparent;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+svg {
+    width: 40px;
+    height: 40px;
+    fill: #fff; 
+}
+
+.card h2 {
+    margin-top: 30px;
+}
+
+.card ul {
+    padding: 0;
+    text-align: left;
+}
+
+.card ul li {
+    margin: 0.5em 0;
+}
+
+
+    </style>
+</head>
+
+<body>
+    <div class="nav-container">
+        <img class="navbar-logo" src="{% static 'LOGO2.png' %}" alt="Logo">
+        <div class="nav">
+            <a href="{% url 'myApp:home' %}">Home</a>
+            <a href="{% url 'myApp:history' %}">History</a>
+            <a href="{% url 'myApp:prediction' %}" class="active">Prediction</a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'myApp:logoutUser' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'myApp:sign' %}">Sign Up</a>
+                <a href="{% url 'myApp:Login' %}">Login</a>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="flex-container">
+        <div class="container">
+            <div class="cardd">
+                <div class="card" onclick="window.location.href='model_one.html';">
+                    <a href="{% url 'myApp:model1' %}" style="text-decoration: none; color: white;"></a>
+                    <h3>Predict using sequences</h3>
+                    <ul>
+                        <li>This model is trained on antibody chain sequences and antigen epitope sequence</li>
+                        <li>Input requirments: the amino acid sequences heavy and light chains of CDRs and the epitope sequence</li>
+                        <li>Ideal if you have sequence data but lack structural information</li>
+                    </ul>
+                </div>
+
+                <div class="card" onclick="window.location.href='model_two.html';">
+                    <a href="{% url 'myApp:model2' %}" style="text-decoration: none; color: white;"></a>
+                    <h3>Predict using contact points</h3>
+                    <ul>
+                        <li>The model is trained on sequence and secondary stucture for the contact point of antigen and antibody</li>
+                        <li>Input requirments: Requires amino acid sequences, secondary structure sequence, and solvent accessibility of the antigen and antibody.</li>
+                        <li>Ideal when you have both sequence and structural data</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
